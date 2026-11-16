@@ -46,18 +46,18 @@ val zFoldPatch = patch(
         //    wrap every float return through Fold.insetRatio().
         val targets = mutableListOf<String>()
         classDefForEach { c ->
-            if (c.methods.any { it.name == INSET_METHOD && it.returnType == "F" && it.implementation != null }) {
+            if (c.methods.any { it.name == INSET_METHOD && it.returnType == "Ljava/lang/Float;" && it.implementation != null }) {
                 targets += c.type
             }
         }
         var hooked = 0
         targets.forEach { type ->
             mutableClassDefBy(type).methods
-                .filter { it.name == INSET_METHOD && it.returnType == "F" && it.implementation != null }
+                .filter { it.name == INSET_METHOD && it.returnType == "Ljava/lang/Float;" && it.implementation != null }
                 .forEach { m ->
                     m.implementation!!.instructions
                         .withIndex()
-                        .filter { it.value.opcode == Opcode.RETURN }
+                        .filter { it.value.opcode == Opcode.RETURN_OBJECT }
                         .map { it.index }
                         .reversed()
                         .forEach { i ->
@@ -65,8 +65,8 @@ val zFoldPatch = patch(
                             m.addInstructions(
                                 i,
                                 """
-                                invoke-static/range {v$r .. v$r}, $EXT->insetRatio(F)F
-                                move-result v$r
+                                invoke-static/range {v$r .. v$r}, $EXT->insetRatio(Ljava/lang/Float;)Ljava/lang/Float;
+                                move-result-object v$r
                                 """,
                             )
                             hooked++

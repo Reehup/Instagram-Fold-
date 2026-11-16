@@ -86,8 +86,8 @@ public final class Fold {
     }
 
     /** Wrapped around getLargeScreenInsetContentRatio(): kills the inset card on the cover. */
-    public static float insetRatio(float original) {
-        return (COVER_FULL_BLEED_REELS && coverNow) ? 0f : original;
+    public static Float insetRatio(Float original) {
+        return (COVER_FULL_BLEED_REELS && coverNow) ? null : original;
     }
 
     // ============================================================ lifecycle
