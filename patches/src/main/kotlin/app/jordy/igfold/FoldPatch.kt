@@ -39,7 +39,7 @@ val zFoldPatch = patch(
         //    InstagramAppShell is unobfuscated and overrides onCreate()V in 456.
         mutableClassDefBy(APP_SHELL).methods
             .first { it.name == "onCreate" && it.parameterTypes.isEmpty() }
-            .addInstruction(0, "invoke-static {p0}, $EXT->install(Landroid/app/Application;)V")
+            .addInstruction(0, "invoke-static/range {p0 .. p0}, $EXT->install(Landroid/app/Application;)V")
 
         // 2) Remove the inset card around Reels on the cover screen.
         //    getLargeScreenInsetContentRatio is unobfuscated (3 dex files in 456):
@@ -65,7 +65,7 @@ val zFoldPatch = patch(
                             m.addInstructions(
                                 i,
                                 """
-                                invoke-static {v$r}, $EXT->insetRatio(F)F
+                                invoke-static/range {v$r .. v$r}, $EXT->insetRatio(F)F
                                 move-result v$r
                                 """,
                             )
